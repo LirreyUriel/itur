@@ -9,7 +9,7 @@ let lastBackupAt = 0;
 let inFlight: Promise<void> | null = null;
 
 function backupsEnabled() {
-  return !isVercel() && !isBuildTime();
+  return !isVercel() && !isBuildTime() && (process.env.DATABASE_URL ?? "").startsWith("file:");
 }
 
 function stamp() {

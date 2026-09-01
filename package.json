@@ -9,7 +9,9 @@
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
-    "backup": "tsx scripts/backup-now.ts"
+    "backup": "tsx scripts/backup-now.ts",
+    "db:export": "tsx scripts/export-sqlite.ts",
+    "db:import": "tsx scripts/import-postgres.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
