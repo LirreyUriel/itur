@@ -89,7 +89,7 @@ export function MultiSelect({
           <ChevronsUpDown className="ms-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" dir="rtl" className="w-[var(--radix-popover-trigger-width)] p-0 text-start">
+      <PopoverContent align="start" className="w-[var(--radix-popover-trigger-width)] p-0 text-start">
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
           <CommandList>
