@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { maybeBackup } from "@/lib/backup";
+import { databaseUrl, isVercel } from "@/lib/paths";
 import { ensurePersistentStorage } from "@/lib/persist";
 
 ensurePersistentStorage();
@@ -11,7 +12,9 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createClient() {
-  const client = new PrismaClient();
+  const client = new PrismaClient({
+    datasources: { db: { url: databaseUrl() } },
+  });
   const ready = client
     .$queryRawUnsafe("PRAGMA journal_mode=WAL")
     .then(() => client.$queryRawUnsafe("PRAGMA synchronous=FULL"))
@@ -34,7 +37,7 @@ if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
 
-if (!globalForPrisma.backupTimer) {
+if (!globalForPrisma.backupTimer && !isVercel()) {
   globalForPrisma.backupTimer = setInterval(() => {
     maybeBackup(prisma);
   }, 10 * 60 * 1000);

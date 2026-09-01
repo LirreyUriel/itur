@@ -1,6 +1,6 @@
 import { copyFile, mkdir, readdir, rm, stat } from "node:fs/promises";
 import path from "node:path";
-import { externalBackupsDir, projectBackupsDir, uploadsDir } from "@/lib/paths";
+import { externalBackupsDir, isBuildTime, isVercel, projectBackupsDir, uploadsDir } from "@/lib/paths";
 import type { PrismaClient } from "@prisma/client";
 
 const KEEP = 50;
@@ -8,10 +8,14 @@ const MIN_INTERVAL_MS = 10 * 60 * 1000;
 let lastBackupAt = 0;
 let inFlight: Promise<void> | null = null;
 
+function backupsEnabled() {
+  return !isVercel() && !isBuildTime();
+}
+
 function stamp() {
   const now = new Date();
   const pad = (value: number) => String(value).padStart(2, "0");
-  return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}-${process.pid}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
 async function prune(dir: string, prefix: string) {
@@ -40,6 +44,7 @@ async function copyUploads(destination: string) {
 }
 
 async function runBackup(prisma: PrismaClient) {
+  if (!backupsEnabled()) return;
   const projectDir = projectBackupsDir();
   const externalDir = externalBackupsDir();
   await mkdir(projectDir, { recursive: true });
@@ -65,12 +70,14 @@ async function runBackup(prisma: PrismaClient) {
 }
 
 export async function backupNow(prisma: PrismaClient) {
+  if (!backupsEnabled()) return;
   if (inFlight) await inFlight;
   lastBackupAt = Date.now();
   await runBackup(prisma);
 }
 
 export function maybeBackup(prisma: PrismaClient) {
+  if (!backupsEnabled()) return;
   const now = Date.now();
   if (now - lastBackupAt < MIN_INTERVAL_MS && lastBackupAt !== 0) return;
   if (inFlight) return;
