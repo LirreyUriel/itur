@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/itur.db"
+}
+
+model Evaluator {
+  id             String   @id @default(cuid())
+  name           String
+  roles          Json
+  year           String
+  tz             String
+  ma             String
+  email          String
+  relevantTo2026 Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  events         Event[]
+}
+
+model Event {
+  id         String      @id @default(cuid())
+  date       DateTime
+  notes      String      @default("")
+  status     String      @default("To be done (TBD)")
+  internal   Boolean     @default(false)
+  evaluators Evaluator[]
+  tasks      Task[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Task {
+  id        String    @id @default(cuid())
+  title     String
+  status    String    @default("לביצוע")
+  assignee  String    @default("")
+  notes     String    @default("")
+  links     Json      @default("[]")
+  dueDate   DateTime?
+  eventId   String?
+  event     Event?    @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @default("")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
