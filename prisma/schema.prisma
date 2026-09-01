@@ -26,7 +26,7 @@ model Event {
   id         String      @id @default(cuid())
   date       DateTime
   notes      String      @default("")
-  status     String      @default("To be done (TBD)")
+  status     String      @default("לא ביקשתי")
   internal   Boolean     @default(false)
   evaluators Evaluator[]
   tasks      Task[]

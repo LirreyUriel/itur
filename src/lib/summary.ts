@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { HEBREW_MONTHS_SHORT } from "@/lib/constants";
+import { utcDateKey } from "@/lib/dates";
 
 export type MonthColumn = {
   key: string;
@@ -13,6 +14,7 @@ export type SummaryRow = {
   name: string;
   relevantTo2026: boolean;
   counts: Record<string, number>;
+  dates: Record<string, string[]>;
   total: number;
 };
 
@@ -98,34 +100,47 @@ export async function getMonthlySummary(): Promise<MonthlySummary> {
   );
 
   const countsByEvaluator = new Map<string, Record<string, number>>();
+  const datesByEvaluator = new Map<string, Record<string, string[]>>();
 
   for (const evaluator of evaluators) {
     countsByEvaluator.set(
       evaluator.id,
       Object.fromEntries(months.map((month) => [month.key, 0])),
     );
+    datesByEvaluator.set(
+      evaluator.id,
+      Object.fromEntries(months.map((month) => [month.key, [] as string[]])),
+    );
   }
 
   for (const event of events) {
     const key = monthKey(event.date.getUTCFullYear(), event.date.getUTCMonth() + 1);
     if (!(key in totals)) continue;
+    const dateKey = utcDateKey(event.date);
 
     for (const evaluator of event.evaluators) {
       const counts = countsByEvaluator.get(evaluator.id);
-      if (!counts) continue;
+      const dates = datesByEvaluator.get(evaluator.id);
+      if (!counts || !dates) continue;
       counts[key] += 1;
+      if (!dates[key].includes(dateKey)) dates[key].push(dateKey);
       totals[key] += 1;
     }
   }
 
   const rows: SummaryRow[] = evaluators.map((evaluator) => {
     const counts = countsByEvaluator.get(evaluator.id) ?? {};
+    const dates = datesByEvaluator.get(evaluator.id) ?? {};
+    for (const key of Object.keys(dates)) {
+      dates[key] = [...dates[key]].sort();
+    }
     const total = Object.values(counts).reduce((sum, value) => sum + value, 0);
     return {
       evaluatorId: evaluator.id,
       name: evaluator.name,
       relevantTo2026: evaluator.relevantTo2026,
       counts,
+      dates,
       total,
     };
   });

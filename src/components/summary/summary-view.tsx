@@ -2,14 +2,29 @@
 
 import { useMemo, useState } from "react";
 import { PageHeader, Surface } from "@/components/page-header";
+import { formatHebrewDate } from "@/lib/dates";
 import type { MonthlySummary } from "@/lib/summary";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
+type DateDialog = {
+  name: string;
+  monthLabel: string;
+  dates: string[];
+};
+
 export function SummaryView({ summary }: { summary: MonthlySummary }) {
   const [relevantOnly, setRelevantOnly] = useState(true);
+  const [dateDialog, setDateDialog] = useState<DateDialog | null>(null);
   const months = summary.months;
   const rows = useMemo(
     () =>
@@ -87,6 +102,7 @@ export function SummaryView({ summary }: { summary: MonthlySummary }) {
                     </td>
                     {months.map((month) => {
                       const value = row.counts[month.key] ?? 0;
+                      const dates = row.dates[month.key] ?? [];
                       return (
                         <td
                           key={month.key}
@@ -97,7 +113,23 @@ export function SummaryView({ summary }: { summary: MonthlySummary }) {
                               : "text-muted-foreground/50",
                           )}
                         >
-                          {value || "—"}
+                          {value > 0 ? (
+                            <button
+                              type="button"
+                              className="underline-offset-2 hover:underline"
+                              onClick={() =>
+                                setDateDialog({
+                                  name: row.name,
+                                  monthLabel: month.label,
+                                  dates,
+                                })
+                              }
+                            >
+                              {value}
+                            </button>
+                          ) : (
+                            "—"
+                          )}
                         </td>
                       );
                     })}
@@ -124,6 +156,28 @@ export function SummaryView({ summary }: { summary: MonthlySummary }) {
           </table>
         </div>
       </Surface>
+
+      <Dialog open={dateDialog !== null} onOpenChange={(open) => !open && setDateDialog(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{dateDialog?.name}</DialogTitle>
+            <DialogDescription>
+              תאריכי הגעה בחודש {dateDialog?.monthLabel}
+            </DialogDescription>
+          </DialogHeader>
+          {dateDialog && dateDialog.dates.length > 0 ? (
+            <ul className="grid gap-2 text-sm">
+              {dateDialog.dates.map((date) => (
+                <li key={date} className="rounded-lg border bg-muted/40 px-3 py-2">
+                  {formatHebrewDate(date)}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-muted-foreground">אין תאריכים בחודש זה.</p>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

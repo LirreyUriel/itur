@@ -1,11 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { allowedEvaluatorRoles } from "@/lib/constants";
 import { revalidateApp, type ActionResult } from "@/lib/action-utils";
 
 function readRoles(roles: unknown) {
-  if (!Array.isArray(roles)) return [];
-  return roles.filter((role): role is string => typeof role === "string" && role.trim().length > 0);
+  return allowedEvaluatorRoles(roles);
 }
 
 export async function createEvaluator(input: {

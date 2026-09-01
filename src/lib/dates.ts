@@ -1,4 +1,4 @@
-import { format, parseISO } from "date-fns";
+import { addDays, format, parseISO } from "date-fns";
 import { he } from "date-fns/locale";
 import { HEBREW_MONTHS_SHORT } from "@/lib/constants";
 
@@ -41,4 +41,16 @@ export function isPastEvent(date: Date | string) {
 
 export function isUpcomingEvent(date: Date | string) {
   return toDateInputValue(date) >= todayKey();
+}
+
+export function isWithinNextDays(date: Date | string, days: number) {
+  const key = toDateInputValue(date);
+  const start = todayKey();
+  const end = format(addDays(parseISO(start), days), "yyyy-MM-dd");
+  return key >= start && key <= end;
+}
+
+export function utcDateKey(date: Date | string) {
+  const d = typeof date === "string" ? parseISO(date) : date;
+  return d.toISOString().slice(0, 10);
 }

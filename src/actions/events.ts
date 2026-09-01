@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { isEventStatus } from "@/lib/constants";
+import { normalizeEventStatus } from "@/lib/constants";
 import { parseDateOnly } from "@/lib/dates";
 import { revalidateApp, type ActionResult } from "@/lib/action-utils";
 
@@ -13,13 +13,14 @@ export async function createEvent(input: {
   internal: boolean;
 }): Promise<ActionResult> {
   if (!input.date) return { ok: false, error: "יש לבחור תאריך." };
-  if (!isEventStatus(input.status)) return { ok: false, error: "סטטוס לא תקין." };
+  const status = normalizeEventStatus(input.status);
+  if (!status) return { ok: false, error: "סטטוס לא תקין." };
 
   const created = await prisma.event.create({
     data: {
       date: parseDateOnly(input.date),
       notes: input.notes.trim(),
-      status: input.status,
+      status,
       internal: input.internal,
       evaluators: {
         connect: input.evaluatorIds.map((id) => ({ id })),
@@ -40,14 +41,15 @@ export async function updateEvent(input: {
   internal: boolean;
 }): Promise<ActionResult> {
   if (!input.date) return { ok: false, error: "יש לבחור תאריך." };
-  if (!isEventStatus(input.status)) return { ok: false, error: "סטטוס לא תקין." };
+  const status = normalizeEventStatus(input.status);
+  if (!status) return { ok: false, error: "סטטוס לא תקין." };
 
   await prisma.event.update({
     where: { id: input.id },
     data: {
       date: parseDateOnly(input.date),
       notes: input.notes.trim(),
-      status: input.status,
+      status,
       internal: input.internal,
       evaluators: {
         set: input.evaluatorIds.map((id) => ({ id })),
@@ -60,8 +62,9 @@ export async function updateEvent(input: {
 }
 
 export async function updateEventStatus(id: string, status: string): Promise<ActionResult> {
-  if (!isEventStatus(status)) return { ok: false, error: "סטטוס לא תקין." };
-  await prisma.event.update({ where: { id }, data: { status } });
+  const next = normalizeEventStatus(status);
+  if (!next) return { ok: false, error: "סטטוס לא תקין." };
+  await prisma.event.update({ where: { id }, data: { status: next } });
   revalidateApp();
   return { ok: true, id };
 }

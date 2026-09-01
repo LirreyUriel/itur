@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -10,8 +10,16 @@ import {
   updateEventInternal,
   updateEventStatus,
 } from "@/actions/events";
-import { EVENT_STATUSES, EVENT_STATUS_LABELS, type EventStatus } from "@/lib/constants";
+import {
+  composeEventName,
+  EVENT_NAME_OTHER,
+  EVENT_NAME_PRESETS,
+  EVENT_STATUSES,
+  parseEventName,
+  type EventStatus,
+} from "@/lib/constants";
 import { formatHebrewDate, isPastEvent, isUpcomingEvent, toDateInputValue } from "@/lib/dates";
+import { needsInterviewAssignment } from "@/lib/event-rules";
 import type { EvaluatorRecord, EventRecord } from "@/lib/types";
 import { EvaluatorChip } from "@/components/evaluator-chip";
 import { MultiSelect } from "@/components/multi-select";
@@ -44,13 +52,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 const emptyForm = {
   date: "",
-  notes: "",
-  status: "To be done (TBD)" as EventStatus,
+  nameKind: EVENT_NAME_PRESETS[0] as string,
+  nameCustom: "",
+  status: "לא ביקשתי" as EventStatus,
   evaluatorIds: [] as string[],
   internal: false,
 };
@@ -67,7 +75,22 @@ export function EventsView({
   const [form, setForm] = useState(emptyForm);
   const [query, setQuery] = useState("");
   const [upcomingOnly, setUpcomingOnly] = useState(true);
+  const [internalById, setInternalById] = useState<Record<string, boolean>>({});
   const [pending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setInternalById((current) => {
+      let changed = false;
+      const next = { ...current };
+      for (const event of events) {
+        if (event.id in next && next[event.id] === event.internal) {
+          delete next[event.id];
+          changed = true;
+        }
+      }
+      return changed ? next : current;
+    });
+  }, [events]);
 
   const evaluatorOptions = useMemo(
     () => evaluators.map((evaluator) => ({ value: evaluator.id, label: evaluator.name })),
@@ -98,10 +121,12 @@ export function EventsView({
   }
 
   function openEdit(event: EventRecord) {
+    const parsed = parseEventName(event.notes);
     setEditing(event);
     setForm({
       date: toDateInputValue(event.date),
-      notes: event.notes,
+      nameKind: parsed.kind,
+      nameCustom: parsed.custom,
       status: event.status as EventStatus,
       evaluatorIds: event.evaluators.map((evaluator) => evaluator.id),
       internal: event.internal,
@@ -110,10 +135,18 @@ export function EventsView({
   }
 
   function submit() {
+    const notes = composeEventName(form.nameKind, form.nameCustom);
     startTransition(async () => {
+      const payload = {
+        date: form.date,
+        notes,
+        status: form.status,
+        evaluatorIds: form.evaluatorIds,
+        internal: form.internal,
+      };
       const result = editing
-        ? await updateEvent({ id: editing.id, ...form })
-        : await createEvent(form);
+        ? await updateEvent({ id: editing.id, ...payload })
+        : await createEvent(payload);
 
       if (!result.ok) {
         toast.error(result.error ?? "שמירה נכשלה");
@@ -137,11 +170,15 @@ export function EventsView({
     });
   }
 
+  function isInternal(event: EventRecord) {
+    return event.id in internalById ? internalById[event.id] : event.internal;
+  }
+
   return (
     <>
       <PageHeader
         title="אירועים"
-        description="רשימת תאריכים דינמית עם תיעוד חופשי, שיבוץ מעריכים מתוך הבנק, וסטטוס ידני."
+        description="רשימת תאריכים דינמית עם שם אירוע, שיבוץ מעריכים מתוך הבנק, וסטטוס ידני."
         actions={
           <Button onClick={openCreate}>
             <Plus className="size-4" />
@@ -157,7 +194,7 @@ export function EventsView({
             <Input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="חיפוש לפי תיאור, מעריך או סטטוס"
+              placeholder="חיפוש לפי שם, מעריך או סטטוס"
               className="ps-9"
             />
           </div>
@@ -173,9 +210,9 @@ export function EventsView({
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="px-4">תאריך</TableHead>
-              <TableHead className="min-w-[240px]">Notes</TableHead>
-              <TableHead className="min-w-[200px]">Assignee</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className="min-w-[240px]">שם</TableHead>
+              <TableHead className="min-w-[200px]">מעריך</TableHead>
+              <TableHead>סטטוס</TableHead>
               <TableHead className="text-center">פנימי</TableHead>
               <TableHead className="px-4" />
             </TableRow>
@@ -192,16 +229,24 @@ export function EventsView({
             ) : (
               filteredEvents.map((event) => {
                 const past = isPastEvent(event.date);
+                const warn = needsInterviewAssignment({
+                  notes: event.notes,
+                  date: event.date,
+                  evaluatorCount: event.evaluators.length,
+                });
                 return (
                   <TableRow
                     key={event.id}
-                    className={cn(past && "bg-[#E8F5E9] hover:bg-[#dcedd4]")}
+                    className={cn(
+                      past && !warn && "bg-[#E8F5E9] hover:bg-[#dcedd4]",
+                      warn && "bg-[#FFF59D] hover:bg-[#FDD835]",
+                    )}
                   >
                     <TableCell className="px-4 whitespace-nowrap font-medium">
                       {formatHebrewDate(event.date)}
                     </TableCell>
                     <TableCell className="max-w-md whitespace-normal text-muted-foreground">
-                      {event.notes || <span className="italic">אין תיעוד עדיין</span>}
+                      {event.notes || <span className="italic">אין שם עדיין</span>}
                     </TableCell>
                     <TableCell>
                       {event.evaluators.length === 0 ? (
@@ -224,7 +269,7 @@ export function EventsView({
                           });
                         }}
                       >
-                        <SelectTrigger className="h-8 w-[170px]">
+                        <SelectTrigger className="h-8 w-[150px]">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -238,13 +283,24 @@ export function EventsView({
                     </TableCell>
                     <TableCell className="text-center">
                       <Checkbox
-                        checked={event.internal}
+                        id={`event-internal-${event.id}`}
+                        checked={isInternal(event)}
+                        onClick={(clickEvent) => clickEvent.stopPropagation()}
                         onCheckedChange={(checked) => {
+                          const next = checked === true;
+                          setInternalById((current) => ({ ...current, [event.id]: next }));
                           startTransition(async () => {
-                            await updateEventInternal(event.id, checked === true);
+                            const result = await updateEventInternal(event.id, next);
+                            if (!result.ok) {
+                              setInternalById((current) => ({
+                                ...current,
+                                [event.id]: event.internal,
+                              }));
+                              toast.error(result.error ?? "לא ניתן לעדכן סימון פנימי");
+                            }
                           });
                         }}
-                        aria-label="אירוע פנימי"
+                        aria-label={`אירוע פנימי ${event.notes || formatHebrewDate(event.date)}`}
                       />
                     </TableCell>
                     <TableCell className="px-4">
@@ -280,6 +336,35 @@ export function EventsView({
               />
             </div>
             <div className="grid gap-2">
+              <Label htmlFor="event-name-kind">שם</Label>
+              <Select
+                value={form.nameKind}
+                onValueChange={(nameKind) => setForm((current) => ({ ...current, nameKind }))}
+              >
+                <SelectTrigger id="event-name-kind" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {EVENT_NAME_PRESETS.map((name) => (
+                    <SelectItem key={name} value={name}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value={EVENT_NAME_OTHER}>{EVENT_NAME_OTHER}</SelectItem>
+                </SelectContent>
+              </Select>
+              {form.nameKind === EVENT_NAME_OTHER ? (
+                <Input
+                  id="event-name-custom"
+                  value={form.nameCustom}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, nameCustom: event.target.value }))
+                  }
+                  placeholder="שם האירוע"
+                />
+              ) : null}
+            </div>
+            <div className="grid gap-2">
               <Label>מעריכים משובצים</Label>
               <MultiSelect
                 options={evaluatorOptions}
@@ -304,7 +389,7 @@ export function EventsView({
                 <SelectContent>
                   {EVENT_STATUSES.map((status) => (
                     <SelectItem key={status} value={status}>
-                      {EVENT_STATUS_LABELS[status]} · {status}
+                      {status}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -312,25 +397,15 @@ export function EventsView({
             </div>
             <div className="flex items-center gap-2">
               <Checkbox
-                id="internal"
+                id="event-form-internal"
                 checked={form.internal}
                 onCheckedChange={(checked) =>
                   setForm((current) => ({ ...current, internal: checked === true }))
                 }
               />
-              <Label htmlFor="internal" className="cursor-pointer">
+              <Label htmlFor="event-form-internal" className="cursor-pointer">
                 אירוע פנימי (לא יום מיון רשמי)
               </Label>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea
-                id="notes"
-                rows={5}
-                value={form.notes}
-                onChange={(event) => setForm((current) => ({ ...current, notes: event.target.value }))}
-                placeholder="מה קורה ביום הזה, החלטות, ציוד, הערות..."
-              />
             </div>
           </div>
 

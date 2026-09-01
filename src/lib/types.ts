@@ -1,4 +1,4 @@
-import { asStringArray } from "@/lib/constants";
+import { allowedEvaluatorRoles, normalizeEventStatus } from "@/lib/constants";
 import type { Document, Evaluator, Event, Task } from "@prisma/client";
 
 export type EvaluatorRecord = {
@@ -49,7 +49,7 @@ export function toEvaluatorRecord(evaluator: Evaluator): EvaluatorRecord {
   return {
     id: evaluator.id,
     name: evaluator.name,
-    roles: asStringArray(evaluator.roles),
+    roles: allowedEvaluatorRoles(evaluator.roles),
     year: evaluator.year,
     tz: evaluator.tz,
     ma: evaluator.ma,
@@ -65,7 +65,7 @@ export function toEventRecord(
     id: event.id,
     date: event.date.toISOString(),
     notes: event.notes,
-    status: event.status,
+    status: normalizeEventStatus(event.status) ?? event.status,
     internal: event.internal,
     evaluators: event.evaluators.map(toEvaluatorRecord),
   };
