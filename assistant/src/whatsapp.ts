@@ -1,3 +1,4 @@
+import fs from "node:fs/promises";
 import path from "node:path";
 import makeWASocket, {
   Browsers,
@@ -28,6 +29,7 @@ export type AssistantStatus = {
   connection: "connecting" | "qr" | "open" | "close";
   startedAt: string;
   connectedAt?: string;
+  qr?: string;
   lastError?: string;
   lastEvent?: {
     at: string;
@@ -63,6 +65,7 @@ export function getAssistantStatusView() {
     lastError: assistantStatus.lastError,
     lastEvent: assistantStatus.lastEvent,
     lastLocal: assistantStatus.lastLocal,
+    qr: assistantStatus.qr,
   };
 }
 
@@ -154,7 +157,8 @@ export async function startWhatsApp(env: AssistantEnv) {
     if (!fromMe || isGroupJid(remoteJid) || isStatusJid(remoteJid)) return;
     note("skipped", DECRYPT_HINT);
   });
-  const authDir = path.resolve(process.cwd(), "assistant", ".wa-auth");
+  const authDir = path.resolve(env.waAuthDir);
+  await fs.mkdir(authDir, { recursive: true });
   const { state, saveCreds } = await useMultiFileAuthState(authDir);
   const { version } = await fetchLatestBaileysVersion();
 
@@ -179,6 +183,7 @@ export async function startWhatsApp(env: AssistantEnv) {
       const { connection, lastDisconnect, qr } = events["connection.update"];
       if (qr) {
         assistantStatus.connection = "qr";
+        assistantStatus.qr = qr;
         console.log("\nScan this QR code in WhatsApp → Linked devices:\n");
         qrcode.generate(qr, { small: true });
       }
@@ -186,6 +191,7 @@ export async function startWhatsApp(env: AssistantEnv) {
         assistantStatus.connection = "open";
         assistantStatus.connectedAt = new Date().toISOString();
         assistantStatus.lastError = undefined;
+        assistantStatus.qr = undefined;
         ownId = sock.user?.id ?? null;
         ownLid = sock.user?.lid ?? null;
         console.log("WhatsApp connected.");

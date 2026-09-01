@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+assistant/.wa-auth
+.env
+.env.*
+!.env.example
+data
+scripts/inspect-events.ts

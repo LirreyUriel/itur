@@ -31,7 +31,8 @@ ASSISTANT_PORT="3003"
 | `AI_API_KEY` | Gemini key (`GEMINI_API_KEY` is also accepted) |
 | `MY_PHONE_NUMBER` | Your personal number. `050...` or `97250...` both work |
 | `GEMINI_MODEL` | Optional, default `gemini-3.6-flash` |
-| `ASSISTANT_PORT` | Health server, default `3003` |
+| `ASSISTANT_PORT` / `PORT` | Health server. Cloud hosts set `PORT`. Default `3003` |
+| `WA_AUTH_DIR` | Optional folder for the WhatsApp session. Use a persistent volume in the cloud |
 
 Get a Gemini key from [Google AI Studio](https://aistudio.google.com/apikey).
 
@@ -42,7 +43,9 @@ npx prisma generate
 npm run assistant
 ```
 
-On first launch a QR code is printed in the terminal.
+If you see `פורט 3003 תפוס`, the assistant is **already running**. Open [http://localhost:3003](http://localhost:3003) instead of starting a second copy.
+
+On first launch a QR code is printed in the terminal (and on the status page).
 
 1. Open WhatsApp on your phone.
 2. **Settings → Linked devices → Link a device**.
@@ -50,9 +53,32 @@ On first launch a QR code is printed in the terminal.
 
 Session files are stored in `assistant/.wa-auth/` (gitignored). After the first scan, restarts reuse that session.
 
-Status page (Hebrew, auto-refresh): `http://localhost:3003`
+Status page: `http://localhost:3003`
 
 JSON health: `http://localhost:3003/health`
+
+## 3b. Keep it running 24/7 (Railway)
+
+Vercel cannot run this bot: it needs a process that stays connected to WhatsApp. Use a small always-on host such as [Railway](https://railway.app).
+
+1. Create a Railway project from this GitHub repo (`LirreyUriel/itur`).
+2. Set start/build from `railway.toml` (Dockerfile.assistant).
+3. Add a **volume** mounted at `/data`.
+4. Set variables:
+
+```
+DATABASE_URL=  (same Prisma Postgres URL as Vercel)
+AI_API_KEY=
+MY_PHONE_NUMBER=
+APP_PASSWORD=
+WA_AUTH_DIR=/data/wa-auth
+ASSISTANT_PUBLIC=1
+```
+
+5. Open the Railway public URL, sign in with `APP_PASSWORD`, scan the QR if shown.
+6. Stop `npm run assistant` on your PC — WhatsApp allows one linked session like this; two copies fight each other.
+
+Cloud IPs are sometimes blocked by WhatsApp. If the session keeps dropping, the reliable option is a machine at home that stays on.
 
 ## 4. How to talk to it
 

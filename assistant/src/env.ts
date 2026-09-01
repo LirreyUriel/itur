@@ -26,8 +26,9 @@ export function loadAssistantEnv() {
     aiApiKey,
     myPhoneNumber: required("MY_PHONE_NUMBER"),
     geminiModel: optional("GEMINI_MODEL", "gemini-3.6-flash"),
-    port: Number(optional("ASSISTANT_PORT", "3003")),
+    port: Number(optional("PORT") || optional("ASSISTANT_PORT", "3003")),
     logLevel: optional("ASSISTANT_LOG_LEVEL", "info"),
+    waAuthDir: optional("WA_AUTH_DIR") || path.resolve(process.cwd(), "assistant", ".wa-auth"),
   };
 }
 

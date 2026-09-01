@@ -1,3 +1,5 @@
+import { createHmac, timingSafeEqual } from "node:crypto";
+import type { IncomingMessage } from "node:http";
 import express from "express";
 import { loadAssistantEnv } from "./env";
 import { prisma } from "./db";
@@ -9,12 +11,71 @@ import {
   startWhatsApp,
 } from "./whatsapp";
 
+const SESSION_COOKIE = "liritur_assistant";
+
 function escapeHtml(value: string) {
   return value
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+function cloudHosted() {
+  return Boolean(
+    process.env.RAILWAY_ENVIRONMENT ||
+      process.env.FLY_APP_NAME ||
+      process.env.RENDER ||
+      process.env.K_SERVICE ||
+      process.env.ASSISTANT_PUBLIC === "1",
+  );
+}
+
+function httpPassword() {
+  return (process.env.ASSISTANT_HTTP_PASSWORD || process.env.APP_PASSWORD || "").trim();
+}
+
+function cookieValue(req: IncomingMessage, name: string) {
+  const header = req.headers.cookie;
+  if (!header) return "";
+  for (const part of header.split(";")) {
+    const [rawName, ...rest] = part.trim().split("=");
+    if (rawName === name) return decodeURIComponent(rest.join("="));
+  }
+  return "";
+}
+
+function signSession(secret: string) {
+  return createHmac("sha256", secret).update("ok").digest("hex");
+}
+
+function sessionValid(req: IncomingMessage, secret: string) {
+  const actual = cookieValue(req, SESSION_COOKIE);
+  const expected = signSession(secret);
+  const left = Buffer.from(actual);
+  const right = Buffer.from(expected);
+  return left.length === right.length && timingSafeEqual(left, right);
+}
+
+function loginPage(error?: string) {
+  return `<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>כניסה · עוזר LIRITUR</title>
+  </head>
+  <body style="font-family:Heebo,Arial,sans-serif;background:#f6f1ea;margin:0;">
+    <main style="max-width:22rem;margin:4rem auto;padding:0 1.25rem;">
+      <h1>עוזר LIRITUR</h1>
+      ${error ? `<p style="color:#a33b24;">${escapeHtml(error)}</p>` : ""}
+      <form method="post" action="/login" style="background:#fff;padding:1.2rem;border-radius:1rem;">
+        <label>סיסמה<br /><input name="password" type="password" required style="width:100%;margin:.5rem 0 1rem;padding:.5rem;" /></label>
+        <button type="submit">כניסה</button>
+      </form>
+    </main>
+  </body>
+</html>`;
 }
 
 function statusPage() {
@@ -31,11 +92,15 @@ function statusPage() {
           : event?.kind === "skipped"
             ? "דולגה"
             : "עדיין אין הודעה";
+  const qrSrc = status.qr
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(status.qr)}`
+    : "";
 
   return `<!doctype html>
 <html lang="he" dir="rtl">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="${status.qr ? "8" : "30"}" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>מצב העוזר · LIRITUR</title>
     <style>
@@ -66,9 +131,7 @@ function statusPage() {
       dt { font-weight: 700; margin-top: 0.75rem; }
       dd { margin: 0.2rem 0 0; }
       code { font-size: 0.9em; }
-      textarea, button {
-        font: inherit;
-      }
+      textarea, button { font: inherit; }
       textarea {
         width: 100%;
         min-height: 5.5rem;
@@ -89,12 +152,18 @@ function statusPage() {
       }
       button:disabled { opacity: 0.55; cursor: wait; }
       #answer { white-space: pre-wrap; margin-top: 0.9rem; }
+      .qr { display: block; margin: 0.8rem auto; background: #fff; padding: 0.6rem; }
     </style>
   </head>
   <body>
     <main>
       <h1>מצב העוזר</h1>
       <p class="lead">אפשר לשאול כאן עכשיו. בוואטסאפ זה עובד רק אם שולחים <strong>מחשבון אחר</strong> אל המספר שלך — לא מהטלפון אל עצמך.</p>
+      ${
+        qrSrc
+          ? `<section class="card"><p class="bad">ממתין לסריקת QR</p><img class="qr" alt="QR" src="${escapeHtml(qrSrc)}" width="240" height="240" /><p class="muted">וואטסאפ → הגדרות → מכשירים מקושרים → קישור מכשיר</p></section>`
+          : ""
+      }
       <section class="card">
         <form id="ask">
           <label for="q"><strong>שאלה ל־LIRITUR</strong></label>
@@ -119,9 +188,8 @@ function statusPage() {
         </dl>
       </section>
       <section class="card muted">
-        <p>צ'אט עם המספר שלך מאותו חשבון הוא עדיין «הודעה לעצמי». וואטסאפ מצפין אותה כך שהמחשב המקושר לא יכול לקרוא.</p>
-        <p>כדי לקבל תשובות בוואטסאפ: חשבון שני (סימה אחרת / וואטסאפ עסקי) שולח אליך, והעוזר מחובר למספר שלך.</p>
-        <p>JSON: <a href="/health">/health</a></p>
+        <p>צ'אט עם המספר שלך מאותו חשבון הוא עדיין «הודעה לעצמי». וואטסאפ מצפין אותה כך שהמכשיר המקושר לא יכול לקרוא.</p>
+        <p>כדי לקבל תשובות בוואטסאפ: חשבון שני שולח אליך, והעוזר מחובר למספר שלך.</p>
       </section>
     </main>
     <script>
@@ -157,14 +225,67 @@ function statusPage() {
 async function main() {
   const env = loadAssistantEnv();
   await prisma.$connect();
+  const gate = cloudHosted();
+  const password = httpPassword();
+  if (gate && !password) {
+    throw new Error("Cloud assistant requires APP_PASSWORD or ASSISTANT_HTTP_PASSWORD");
+  }
 
   const app = express();
   app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+
+  app.get("/health", (_req, res) => {
+    res.json({
+      ok: assistantStatus.connection === "open" || assistantStatus.connection === "qr",
+      service: "liritur-assistant",
+      whatsapp: assistantStatus.connection,
+    });
+  });
+
+  app.get("/login", (_req, res) => {
+    res.type("html").send(loginPage());
+  });
+  app.post("/login", (req, res) => {
+    if (!gate) {
+      res.redirect("/");
+      return;
+    }
+    const given = String(req.body?.password ?? "");
+    if (given !== password) {
+      res.status(401).type("html").send(loginPage("סיסמה שגויה"));
+      return;
+    }
+    res.cookie(SESSION_COOKIE, signSession(password), {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+    res.redirect("/");
+  });
+
+  if (gate) {
+    app.use((req, res, next) => {
+      if (req.path === "/health" || req.path === "/login") {
+        next();
+        return;
+      }
+      if (sessionValid(req, password)) {
+        next();
+        return;
+      }
+      if (req.path === "/ask") {
+        res.status(401).json({ ok: false, error: "נדרשת התחברות" });
+        return;
+      }
+      res.redirect("/login");
+    });
+  }
+
   app.get("/", (_req, res) => {
     res.type("html").send(statusPage());
-  });
-  app.get("/health", (_req, res) => {
-    res.json(getAssistantStatusView());
   });
   app.post("/ask", async (req, res) => {
     const question = String(req.body?.q ?? "").trim();
@@ -191,9 +312,19 @@ async function main() {
     }
   });
 
-  app.listen(env.port, () => {
+  const server = app.listen(env.port, "0.0.0.0", () => {
     console.log(`Assistant status: http://localhost:${env.port}`);
     console.log(`Assistant health: http://localhost:${env.port}/health`);
+  });
+  server.on("error", (error: NodeJS.ErrnoException) => {
+    if (error.code === "EADDRINUSE") {
+      console.error(
+        `פורט ${env.port} תפוס — העוזר כבר רץ. פתחי http://localhost:${env.port} (אין צורך להריץ שוב npm run assistant).`,
+      );
+      process.exit(1);
+    }
+    console.error(error);
+    process.exit(1);
   });
 
   await startWhatsApp(env);
@@ -204,6 +335,9 @@ main().catch((error) => {
   process.exit(1);
 });
 
-process.on("SIGINT", () => {
+function shutdown() {
   void prisma.$disconnect().finally(() => process.exit(0));
-});
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
