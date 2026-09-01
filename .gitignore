@@ -34,8 +34,7 @@ yarn-error.log*
 .env*
 !.env.example
 
-# Live personal data stays on this machine only — never commit it.
-/data/*.db
+# SQLite sidecars and rolling backups. The live database is tracked.
 /data/*.db-wal
 /data/*.db-shm
 /data/*.db-journal
@@ -49,7 +48,6 @@ yarn-error.log*
 /prisma/*.db-journal
 /prisma/*.db-wal
 /prisma/*.db-shm
-/prisma/seed-data.json
 
 # vercel
 .vercel

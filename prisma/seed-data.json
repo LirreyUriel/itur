@@ -1,0 +1,1257 @@
+{
+  "evaluators": [
+    {
+      "sortOrder": 0,
+      "name": "גיא ברהמס",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "ד׳",
+      "tz": "302576970",
+      "ma": "5988747",
+      "email": "",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 1,
+      "name": "נועם סגל",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "י״ב",
+      "tz": "209085364",
+      "ma": "8420897",
+      "email": "se.noam@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 2,
+      "name": "שובל שהב",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ג",
+      "tz": "209751718",
+      "ma": "8483869",
+      "email": "",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 3,
+      "name": "הדר מתנה",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ד",
+      "tz": "",
+      "ma": "",
+      "email": "hadarmat@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 4,
+      "name": "ברקת שימשילשוילי",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ג",
+      "tz": "8456664",
+      "ma": "206463499",
+      "email": "bareket9420@gmaol.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 5,
+      "name": "ברק סויסה",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ג",
+      "tz": "",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 6,
+      "name": "אור חי",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "ה׳",
+      "tz": "305680985",
+      "ma": "5771181",
+      "email": "Orhay123@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 7,
+      "name": "יועד כהן",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "ו׳",
+      "tz": "203119383",
+      "ma": "5853495",
+      "email": "yoad123@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 8,
+      "name": "אור דרורי",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "ז׳",
+      "tz": "204478820",
+      "ma": "7538637",
+      "email": "drory.or@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 9,
+      "name": "מוראל סגל",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "ט׳",
+      "tz": "316491331",
+      "ma": "8146575",
+      "email": "morgal95@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 10,
+      "name": "שגיב פלדברג",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "ט׳",
+      "tz": "208345538",
+      "ma": "8117496",
+      "email": "Assagivv@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 11,
+      "name": "ידותון גרוסמן",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "ט׳",
+      "tz": "311601132",
+      "ma": "6092323",
+      "email": "yedugr@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 12,
+      "name": "יובל רובינשטיין",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "ט׳",
+      "tz": "205983414",
+      "ma": "8108478",
+      "email": "Yuvalita9@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 13,
+      "name": "שחף פרוס",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "י״א",
+      "tz": "318228491",
+      "ma": "8300920",
+      "email": "Shahaf.pruss@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 14,
+      "name": "אלדר רוזנטל",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "י״ב",
+      "tz": "209028240",
+      "ma": "8238034",
+      "email": "roseeldar@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 15,
+      "name": "הדר לזרובסקי",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "י״ב",
+      "tz": "208687673",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 16,
+      "name": "עמית זוארץ",
+      "roles": [
+        "מנהל תרגיל"
+      ],
+      "year": "י״ג",
+      "tz": "208569855",
+      "ma": "8418885",
+      "email": "amitzoo123@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 17,
+      "name": "ירון פרידמן",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "ח׳",
+      "tz": "204168603",
+      "ma": "7529275",
+      "email": "yaronafriedman123@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 18,
+      "name": "רוני שר",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "י״ג",
+      "tz": "209361468",
+      "ma": "8558631",
+      "email": "ronisher1@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 19,
+      "name": "רותם יקיר",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ד",
+      "tz": "",
+      "ma": "",
+      "email": "rotemyakir8@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 20,
+      "name": "אייל נייפריס",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "י״ב",
+      "tz": "",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 21,
+      "name": "מיכאל נאור",
+      "roles": [
+        "מנהל תרגיל"
+      ],
+      "year": "",
+      "tz": "38793014",
+      "ma": "5195512",
+      "email": "Michael@knlaw.co.il",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 22,
+      "name": "שהם דנינו",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "",
+      "tz": "204287635",
+      "ma": "7574101",
+      "email": "mrdaninos@gmail.com",
+      "relevantTo2026": true
+    },
+    {
+      "sortOrder": 23,
+      "name": "עומר גרנות",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "ג׳",
+      "tz": "",
+      "ma": "5912228",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 24,
+      "name": "שאול רון",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "ו׳",
+      "tz": "204008908",
+      "ma": "5875804",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 25,
+      "name": "יושי שפירא",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "ט׳",
+      "tz": "",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 26,
+      "name": "שחר רביד",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "ט׳",
+      "tz": "315718841",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 27,
+      "name": "אופיר רוזנבוים",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י׳",
+      "tz": "",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 28,
+      "name": "נגה בן בסט",
+      "roles": [
+        "מראיין",
+        "מנהל תרגיל"
+      ],
+      "year": "י״ב",
+      "tz": "208544791",
+      "ma": "8223056",
+      "email": "nogabb@gmail.com",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 29,
+      "name": "אלעד ארן",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ב",
+      "tz": "",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 30,
+      "name": "מאיה למדן",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ג",
+      "tz": "206501751",
+      "ma": "8456981",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 31,
+      "name": "נפתלי דיטשר",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ג",
+      "tz": "",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 32,
+      "name": "אור ינוביץ",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ג",
+      "tz": "207941931",
+      "ma": "8471512",
+      "email": "or.y55555@gmail.com",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 33,
+      "name": "הילה מעודד",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ג",
+      "tz": "",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 34,
+      "name": "אסף בק",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ג",
+      "tz": "",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 35,
+      "name": "מיכל פרקש",
+      "roles": [],
+      "year": "ד׳",
+      "tz": "305454274",
+      "ma": "6055902",
+      "email": "",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 36,
+      "name": "יונתן אריאל",
+      "roles": [],
+      "year": "י׳",
+      "tz": "313345126",
+      "ma": "8120124",
+      "email": "Yonatan.Ariel96@gmail.com",
+      "relevantTo2026": false
+    },
+    {
+      "sortOrder": 37,
+      "name": "אביגיל אסף שפירא",
+      "roles": [
+        "מראיין"
+      ],
+      "year": "י״ד",
+      "tz": "",
+      "ma": "",
+      "email": "",
+      "relevantTo2026": false
+    }
+  ],
+  "events": [
+    {
+      "date": "2026-07-21",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "ירון פרידמן",
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-07-22",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "ירון פרידמן",
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-07-23",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "ירון פרידמן",
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-07-26",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "ירון פרידמן",
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-07-27",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "ירון פרידמן",
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-07-28",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "ירון פרידמן",
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-07-29",
+      "notes": "פיילוט מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "ירון פרידמן",
+        "אלעד ארן",
+        "אלדר רוזנטל",
+        "נועם סגל",
+        "מוראל סגל",
+        "אור דרורי"
+      ]
+    },
+    {
+      "date": "2026-08-18",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-08-19",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-08-20",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-08-23",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-08-24",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-08-25",
+      "notes": "שיפור מבחני מצב",
+      "status": "Approved",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-23",
+      "notes": "הכשרת מראיינים",
+      "status": "In Process",
+      "evaluatorNames": [
+        "רוני שר",
+        "יועד כהן",
+        "שגיב פלדברג",
+        "יובל רובינשטיין",
+        "מוראל סגל",
+        "אלדר רוזנטל",
+        "אור חי",
+        "שחף פרוס",
+        "שהם דנינו",
+        "אור דרורי",
+        "ידותון גרוסמן",
+        "ירון פרידמן"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "notes": "הכשרת מנהלי תרגיל",
+      "status": "In Process",
+      "evaluatorNames": [
+        "יועד כהן",
+        "אלדר רוזנטל",
+        "שחף פרוס",
+        "שהם דנינו",
+        "אור דרורי",
+        "ירון פרידמן"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-07",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-08",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-09",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-11",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-12",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-14",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-15",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-16",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-09-17",
+      "notes": "ראיונות - קיבוצי",
+      "status": "In Process",
+      "evaluatorNames": [
+        "שגיב פלדברג"
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-06",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-11",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-12",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-13",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-14",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-19",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-20",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-21",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-26",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-27",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-10-28",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-01",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-09",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-10",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-15",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-16",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-17",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-18",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-23",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-25",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-29",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-11-30",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-01",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-13",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-14",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-15",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-16",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-20",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-21",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-22",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-23",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-27",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-28",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2026-12-30",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-03",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-04",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-05",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-06",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-10",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-11",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-12",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-13",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-17",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-18",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-19",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-24",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-25",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-26",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-27",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-01-31",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-01",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-02",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-03",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-07",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-08",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-09",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-10",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-14",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-15",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-16",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-17",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-21",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-22",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-23",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-24",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-02-28",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-01",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-02",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-03",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-07",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-08",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-09",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-10",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-14",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-15",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-16",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-17",
+      "notes": "כנס חבצלות",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-21",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-28",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-29",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-30",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-03-31",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-04-04",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-04-05",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-04-06",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-04-07",
+      "notes": "מבחני מצב",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-04-11",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-04-14",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    },
+    {
+      "date": "2027-04-18",
+      "notes": "ריאיון",
+      "status": "To be done (TBD)",
+      "evaluatorNames": []
+    }
+  ]
+}
