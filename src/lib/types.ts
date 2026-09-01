@@ -43,7 +43,14 @@ export type DocumentRecord = {
   title: string;
   content: string;
   sortOrder: number;
+  folderId: string | null;
   updatedAt: string;
+};
+
+export type FolderRecord = {
+  id: string;
+  name: string;
+  sortOrder: number;
 };
 
 export function toEvaluatorRecord(evaluator: Evaluator): EvaluatorRecord {
@@ -105,6 +112,7 @@ export function toDocumentRecord(document: Document): DocumentRecord {
     title: document.title,
     content: document.content,
     sortOrder: document.sortOrder,
+    folderId: document.folderId,
     updatedAt: document.updatedAt.toISOString(),
   };
 }

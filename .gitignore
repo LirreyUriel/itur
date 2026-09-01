@@ -53,6 +53,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# WhatsApp assistant session (QR login)
+/assistant/.wa-auth/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

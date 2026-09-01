@@ -8,10 +8,12 @@ import {
   CheckSquare,
   FileText,
   LayoutDashboard,
+  LogOut,
   Menu,
   Table2,
   Users,
 } from "lucide-react";
+import { logout } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -69,10 +71,10 @@ function Brand() {
     <div className="mb-8 px-1">
       <div className="flex items-center gap-3">
         <div className="flex size-10 items-center justify-center rounded-xl bg-[#A5D6A7] text-sm font-bold text-[#1B5E20]">
-          את
+          LI
         </div>
         <div>
-          <p className="text-base font-semibold tracking-tight text-white">ליריתור</p>
+            <p className="text-base font-semibold tracking-tight text-white">LIRITUR</p>
           <p className="text-xs text-white/55">מערכת ניהול פנימית</p>
         </div>
       </div>
@@ -85,9 +87,21 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
     <div className="flex h-full flex-col">
       <Brand />
       <NavLinks onNavigate={onNavigate} />
-      <p className="mt-auto pt-6 text-[11px] leading-5 text-white/40">
-        הנתונים נשמרים מקומית בתיקיית data ומגובים אוטומטית. שום דבר לא נמחק בלי מחיקה מפורשת.
-      </p>
+      <div className="mt-auto space-y-3 pt-6">
+        <form action={logout}>
+          <Button
+            type="submit"
+            variant="ghost"
+            className="w-full justify-start text-white/75 hover:bg-white/10 hover:text-white"
+          >
+            <LogOut className="size-4" />
+            יציאה
+          </Button>
+        </form>
+        <p className="text-[11px] leading-5 text-white/40">
+          הנתונים נשמרים מקומית בתיקיית data ומגובים אוטומטית. שום דבר לא נמחק בלי מחיקה מפורשת.
+        </p>
+      </div>
     </div>
   );
 }
@@ -114,7 +128,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <SidebarBody onNavigate={() => setOpen(false)} />
             </SheetContent>
           </Sheet>
-          <span className="text-sm font-semibold">ליריתור</span>
+          <span className="text-sm font-semibold">LIRITUR</span>
         </header>
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
       </div>

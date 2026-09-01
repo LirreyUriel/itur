@@ -1,13 +1,19 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { maybeBackup } from "@/lib/backup";
+import { SESSION_COOKIE, isSessionValid } from "@/lib/auth";
 import { uploadsDir } from "@/lib/paths";
 
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/gif", "image/webp"]);
 
 export async function POST(request: Request) {
+  if (!(await isSessionValid((await cookies()).get(SESSION_COOKIE)?.value))) {
+    return NextResponse.json({ error: "נדרשת התחברות" }, { status: 401 });
+  }
+
   const formData = await request.formData();
   const file = formData.get("file");
 
