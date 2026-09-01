@@ -1,0 +1,7 @@
+.env
+.env.*
+!.env.example
+data/export.json
+data/itur.db
+node_modules
+.next
