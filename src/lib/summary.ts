@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { HEBREW_MONTHS_SHORT } from "@/lib/constants";
+import { HEBREW_MONTHS_SHORT, normalizeEventStatus } from "@/lib/constants";
 import { utcDateKey } from "@/lib/dates";
 
 export type MonthColumn = {
@@ -9,12 +9,22 @@ export type MonthColumn = {
   label: string;
 };
 
+export type AttendanceLabel = {
+  name: string;
+  approved: boolean;
+};
+
+export type AttendanceDate = {
+  date: string;
+  labels: AttendanceLabel[];
+};
+
 export type SummaryRow = {
   evaluatorId: string;
   name: string;
   relevantTo2026: boolean;
   counts: Record<string, number>;
-  dates: Record<string, string[]>;
+  dates: Record<string, AttendanceDate[]>;
   total: number;
 };
 
@@ -89,6 +99,8 @@ export async function getMonthlySummary(): Promise<MonthlySummary> {
     prisma.event.findMany({
       select: {
         date: true,
+        notes: true,
+        status: true,
         evaluators: { select: { id: true } },
       },
     }),
@@ -100,7 +112,7 @@ export async function getMonthlySummary(): Promise<MonthlySummary> {
   );
 
   const countsByEvaluator = new Map<string, Record<string, number>>();
-  const datesByEvaluator = new Map<string, Record<string, string[]>>();
+  const datesByEvaluator = new Map<string, Record<string, AttendanceDate[]>>();
 
   for (const evaluator of evaluators) {
     countsByEvaluator.set(
@@ -109,7 +121,7 @@ export async function getMonthlySummary(): Promise<MonthlySummary> {
     );
     datesByEvaluator.set(
       evaluator.id,
-      Object.fromEntries(months.map((month) => [month.key, [] as string[]])),
+      Object.fromEntries(months.map((month) => [month.key, [] as AttendanceDate[]])),
     );
   }
 
@@ -117,14 +129,23 @@ export async function getMonthlySummary(): Promise<MonthlySummary> {
     const key = monthKey(event.date.getUTCFullYear(), event.date.getUTCMonth() + 1);
     if (!(key in totals)) continue;
     const dateKey = utcDateKey(event.date);
+    const name = event.notes.trim() || "ללא שם";
+    const approved = (normalizeEventStatus(event.status) ?? event.status) === "אושר";
 
     for (const evaluator of event.evaluators) {
       const counts = countsByEvaluator.get(evaluator.id);
       const dates = datesByEvaluator.get(evaluator.id);
       if (!counts || !dates) continue;
       counts[key] += 1;
-      if (!dates[key].includes(dateKey)) dates[key].push(dateKey);
       totals[key] += 1;
+      const existing = dates[key].find((item) => item.date === dateKey);
+      if (!existing) {
+        dates[key].push({ date: dateKey, labels: [{ name, approved }] });
+        continue;
+      }
+      const label = existing.labels.find((item) => item.name === name);
+      if (!label) existing.labels.push({ name, approved });
+      else if (approved) label.approved = true;
     }
   }
 
@@ -132,7 +153,7 @@ export async function getMonthlySummary(): Promise<MonthlySummary> {
     const counts = countsByEvaluator.get(evaluator.id) ?? {};
     const dates = datesByEvaluator.get(evaluator.id) ?? {};
     for (const key of Object.keys(dates)) {
-      dates[key] = [...dates[key]].sort();
+      dates[key] = [...dates[key]].sort((a, b) => a.date.localeCompare(b.date));
     }
     const total = Object.values(counts).reduce((sum, value) => sum + value, 0);
     return {

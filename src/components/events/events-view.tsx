@@ -24,6 +24,8 @@ import type { EvaluatorRecord, EventRecord } from "@/lib/types";
 import { EvaluatorChip } from "@/components/evaluator-chip";
 import { MultiSelect } from "@/components/multi-select";
 import { PageHeader, Surface } from "@/components/page-header";
+import { SortableHead } from "@/components/sortable-head";
+import { compareValues, toggleSort, type SortState } from "@/lib/sort";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -63,6 +65,8 @@ const emptyForm = {
   internal: false,
 };
 
+type EventSortKey = "date" | "notes" | "evaluators" | "status" | "internal";
+
 export function EventsView({
   events,
   evaluators,
@@ -75,6 +79,9 @@ export function EventsView({
   const [form, setForm] = useState(emptyForm);
   const [query, setQuery] = useState("");
   const [upcomingOnly, setUpcomingOnly] = useState(true);
+  const [nameFilter, setNameFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sort, setSort] = useState<SortState<EventSortKey>>({ key: "date", dir: "asc" });
   const [internalById, setInternalById] = useState<Record<string, boolean>>({});
   const [pending, startTransition] = useTransition();
 
@@ -97,10 +104,18 @@ export function EventsView({
     [evaluators],
   );
 
+  const nameOptions = useMemo(() => {
+    return [...new Set(events.map((event) => event.notes).filter(Boolean))].sort((left, right) =>
+      left.localeCompare(right, "he"),
+    );
+  }, [events]);
+
   const filteredEvents = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return events.filter((event) => {
       if (upcomingOnly && !isUpcomingEvent(event.date)) return false;
+      if (nameFilter !== "all" && event.notes !== nameFilter) return false;
+      if (statusFilter !== "all" && event.status !== statusFilter) return false;
       if (!needle) return true;
       return [
         event.notes,
@@ -112,7 +127,35 @@ export function EventsView({
         .toLowerCase()
         .includes(needle);
     });
-  }, [events, query, upcomingOnly]);
+  }, [events, query, upcomingOnly, nameFilter, statusFilter]);
+
+  const displayedEvents = useMemo(() => {
+    const next = [...filteredEvents];
+    next.sort((left, right) => {
+      switch (sort.key) {
+        case "date":
+          return compareValues(toDateInputValue(left.date), toDateInputValue(right.date), sort.dir);
+        case "notes":
+          return compareValues(left.notes, right.notes, sort.dir);
+        case "evaluators":
+          return compareValues(
+            left.evaluators.map((evaluator) => evaluator.name).join(", "),
+            right.evaluators.map((evaluator) => evaluator.name).join(", "),
+            sort.dir,
+          );
+        case "status":
+          return compareValues(left.status, right.status, sort.dir);
+        case "internal": {
+          const leftInternal = left.id in internalById ? internalById[left.id] : left.internal;
+          const rightInternal = right.id in internalById ? internalById[right.id] : right.internal;
+          return compareValues(leftInternal, rightInternal, sort.dir);
+        }
+        default:
+          return 0;
+      }
+    });
+    return next;
+  }, [filteredEvents, sort, internalById]);
 
   function openCreate() {
     setEditing(null);
@@ -188,37 +231,92 @@ export function EventsView({
       />
 
       <Surface>
-        <div className="flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center">
-          <div className="relative max-w-sm flex-1">
-            <Search className="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="חיפוש לפי שם, מעריך או סטטוס"
-              className="ps-9"
-            />
+        <div className="flex flex-col gap-3 border-b px-4 py-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative max-w-sm flex-1">
+              <Search className="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="חיפוש לפי שם, מעריך או סטטוס"
+                className="ps-9"
+              />
+            </div>
+            <Select value={nameFilter} onValueChange={setNameFilter}>
+              <SelectTrigger className="w-full sm:w-[180px]">
+                <SelectValue placeholder="סינון לפי שם" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">כל השמות</SelectItem>
+                {nameOptions.map((name) => (
+                  <SelectItem key={name} value={name}>
+                    {name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full sm:w-[160px]">
+                <SelectValue placeholder="סינון לפי סטטוס" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">כל הסטטוסים</SelectItem>
+                {EVENT_STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="flex items-center gap-2">
+              <Switch id="upcoming-only" checked={upcomingOnly} onCheckedChange={setUpcomingOnly} />
+              <Label htmlFor="upcoming-only" className="cursor-pointer text-sm">
+                רק אירועים שעוד לא קרו
+              </Label>
+            </div>
+            <p className="text-xs text-muted-foreground sm:ms-auto">{displayedEvents.length} אירועים</p>
           </div>
-          <div className="flex items-center gap-2">
-            <Switch id="upcoming-only" checked={upcomingOnly} onCheckedChange={setUpcomingOnly} />
-            <Label htmlFor="upcoming-only" className="cursor-pointer text-sm">
-              רק אירועים שעוד לא קרו
-            </Label>
-          </div>
-          <p className="text-xs text-muted-foreground sm:ms-auto">{filteredEvents.length} אירועים</p>
         </div>
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className="px-4">תאריך</TableHead>
-              <TableHead className="min-w-[240px]">שם</TableHead>
-              <TableHead className="min-w-[200px]">מעריך</TableHead>
-              <TableHead>סטטוס</TableHead>
-              <TableHead className="text-center">פנימי</TableHead>
+              <SortableHead
+                label="תאריך"
+                className="px-4"
+                active={sort.key === "date"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "date"))}
+              />
+              <SortableHead
+                label="שם"
+                active={sort.key === "notes"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "notes"))}
+              />
+              <SortableHead
+                label="מעריך"
+                active={sort.key === "evaluators"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "evaluators"))}
+              />
+              <SortableHead
+                label="סטטוס"
+                active={sort.key === "status"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "status"))}
+              />
+              <SortableHead
+                label="פנימי"
+                align="center"
+                active={sort.key === "internal"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "internal"))}
+              />
               <TableHead className="px-4" />
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredEvents.length === 0 ? (
+            {displayedEvents.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                   {events.length === 0
@@ -227,7 +325,7 @@ export function EventsView({
                 </TableCell>
               </TableRow>
             ) : (
-              filteredEvents.map((event) => {
+              displayedEvents.map((event) => {
                 const past = isPastEvent(event.date);
                 const warn = needsInterviewAssignment({
                   notes: event.notes,

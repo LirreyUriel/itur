@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { PageHeader, Surface } from "@/components/page-header";
 import { formatHebrewDate } from "@/lib/dates";
-import type { MonthlySummary } from "@/lib/summary";
+import type { AttendanceDate, MonthlySummary } from "@/lib/summary";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,7 +19,7 @@ import { Switch } from "@/components/ui/switch";
 type DateDialog = {
   name: string;
   monthLabel: string;
-  dates: string[];
+  dates: AttendanceDate[];
 };
 
 export function SummaryView({ summary }: { summary: MonthlySummary }) {
@@ -167,9 +167,25 @@ export function SummaryView({ summary }: { summary: MonthlySummary }) {
           </DialogHeader>
           {dateDialog && dateDialog.dates.length > 0 ? (
             <ul className="grid gap-2 text-sm">
-              {dateDialog.dates.map((date) => (
-                <li key={date} className="rounded-lg border bg-muted/40 px-3 py-2">
-                  {formatHebrewDate(date)}
+              {dateDialog.dates.map((item) => (
+                <li key={item.date} className="rounded-lg border bg-muted/40 px-3 py-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-medium">{formatHebrewDate(item.date)}</p>
+                    {item.labels.some((label) => label.approved) ? (
+                      <Badge className="text-[10px]">אושר</Badge>
+                    ) : null}
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap gap-1">
+                    {item.labels.map((label) => (
+                      <Badge
+                        key={`${item.date}-${label.name}`}
+                        variant={label.approved ? "default" : "secondary"}
+                        className="text-[10px]"
+                      >
+                        {label.name}
+                      </Badge>
+                    ))}
+                  </div>
                 </li>
               ))}
             </ul>

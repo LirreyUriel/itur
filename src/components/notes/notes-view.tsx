@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { FilePlus, GripVertical, Trash2 } from "lucide-react";
+import { FilePlus, FileText, GripVertical, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   createDocument,
@@ -37,12 +37,22 @@ function isDirty(draft: Draft) {
   return draft.title !== draft.savedTitle || draft.content !== draft.savedContent;
 }
 
+function textPreview(html: string) {
+  const text = html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.slice(0, 72);
+}
+
 export function NotesView({ documents }: { documents: DocumentRecord[] }) {
   const [order, setOrder] = useState(documents.map((document) => document.id));
   const [selectedId, setSelectedId] = useState<string | null>(documents[0]?.id ?? null);
   const [dragId, setDragId] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [saveLabel, setSaveLabel] = useState("נשמר");
+  const [docQuery, setDocQuery] = useState("");
   const [drafts, setDrafts] = useState<Record<string, Draft>>(() =>
     Object.fromEntries(documents.map((document) => [document.id, draftFrom(document)])),
   );
@@ -78,6 +88,15 @@ export function NotesView({ documents }: { documents: DocumentRecord[] }) {
       .map((id) => byId.get(id))
       .filter((document): document is DocumentRecord => Boolean(document));
   }, [documents, order]);
+
+  const visibleDocuments = useMemo(() => {
+    const needle = docQuery.trim().toLowerCase();
+    if (!needle) return orderedDocuments;
+    return orderedDocuments.filter((document) => {
+      const title = drafts[document.id]?.title ?? document.title;
+      return title.toLowerCase().includes(needle);
+    });
+  }, [docQuery, drafts, orderedDocuments]);
 
   const selected =
     orderedDocuments.find((document) => document.id === selectedId) ?? null;
@@ -266,8 +285,8 @@ export function NotesView({ documents }: { documents: DocumentRecord[] }) {
   return (
     <>
       <PageHeader
-        title="מסמכים וטקסט חופשי"
-        description="כל שינוי נשמר אוטומטית לקובץ מקומי. שום דבר לא נמחק אלא אם תמחקי במפורש."
+        title="מסמכים"
+        description="עורך טקסט חופשי עם שמירה אוטומטית. גרירה משנה את סדר המסמכים."
         actions={
           <Button onClick={create} disabled={pending}>
             <FilePlus className="size-4" />
@@ -276,56 +295,91 @@ export function NotesView({ documents }: { documents: DocumentRecord[] }) {
         }
       />
 
-      <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <Surface className="h-[calc(100vh-12rem)]">
-          <div className="border-b px-4 py-3 text-sm font-medium">המסמכים שלי</div>
-          <div className="overflow-y-auto">
-            {orderedDocuments.length === 0 ? (
-              <p className="px-4 py-8 text-sm text-muted-foreground">אין מסמכים עדיין.</p>
+      <div className="grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">
+        <Surface className="flex h-[calc(100vh-11rem)] flex-col">
+          <div className="space-y-3 border-b bg-[#F4F8F5] px-4 py-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold">המסמכים שלי</p>
+              <span className="rounded-full bg-white px-2 py-0.5 text-[11px] text-muted-foreground">
+                {orderedDocuments.length}
+              </span>
+            </div>
+            <div className="relative">
+              <Search className="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={docQuery}
+                onChange={(event) => setDocQuery(event.target.value)}
+                placeholder="חיפוש מסמך"
+                className="h-9 bg-white ps-9"
+              />
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto p-2">
+            {visibleDocuments.length === 0 ? (
+              <div className="px-3 py-10 text-center text-sm text-muted-foreground">
+                {orderedDocuments.length === 0 ? "אין מסמכים עדיין." : "אין תוצאות לחיפוש."}
+              </div>
             ) : (
-              orderedDocuments.map((document) => (
-                <div
-                  key={document.id}
-                  draggable
-                  onDragStart={() => setDragId(document.id)}
-                  onDragOver={(event) => event.preventDefault()}
-                  onDrop={() => onDrop(document.id)}
-                  className={cn(
-                    "flex items-stretch border-b transition-colors",
-                    selected?.id === document.id ? "bg-accent" : "hover:bg-muted/50",
-                    dragId === document.id && "opacity-60",
-                  )}
-                >
-                  <button
-                    type="button"
-                    className="flex cursor-grab items-center px-2 text-muted-foreground"
-                    aria-label="גרירת מסמך לשינוי סדר"
-                    onClick={(event) => event.preventDefault()}
+              visibleDocuments.map((document) => {
+                const active = selected?.id === document.id;
+                const preview = textPreview(drafts[document.id]?.content ?? document.content);
+                return (
+                  <div
+                    key={document.id}
+                    draggable
+                    onDragStart={() => setDragId(document.id)}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={() => onDrop(document.id)}
+                    className={cn(
+                      "mb-1 flex items-stretch rounded-xl transition-colors",
+                      active ? "bg-[#E8F5E9] ring-1 ring-[#A5D6A7]" : "hover:bg-muted/60",
+                      dragId === document.id && "opacity-60",
+                    )}
                   >
-                    <GripVertical className="size-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => selectDocument(document.id)}
-                    className="flex min-w-0 flex-1 flex-col gap-1 py-3 pe-4 text-start"
-                  >
-                    <span className="truncate text-sm font-medium">
-                      {drafts[document.id]?.title ?? document.title}
-                    </span>
-                    <span className="text-[11px] text-muted-foreground" suppressHydrationWarning>
-                      עודכן {formatHebrewShortDate(document.updatedAt)}
-                    </span>
-                  </button>
-                </div>
-              ))
+                    <button
+                      type="button"
+                      className="flex cursor-grab items-center px-2 text-muted-foreground"
+                      aria-label="גרירת מסמך לשינוי סדר"
+                      onClick={(event) => event.preventDefault()}
+                    >
+                      <GripVertical className="size-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => selectDocument(document.id)}
+                      className="flex min-w-0 flex-1 items-start gap-2 py-2.5 pe-3 text-start"
+                    >
+                      <span
+                        className={cn(
+                          "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg",
+                          active ? "bg-[#C8E6C9] text-[#1B5E20]" : "bg-muted text-muted-foreground",
+                        )}
+                      >
+                        <FileText className="size-4" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium">
+                          {drafts[document.id]?.title ?? document.title}
+                        </span>
+                        <span className="mt-0.5 block truncate text-[11px] text-muted-foreground">
+                          {preview || "מסמך ריק"}
+                        </span>
+                        <span className="mt-0.5 block text-[11px] text-muted-foreground/80" suppressHydrationWarning>
+                          {formatHebrewShortDate(document.updatedAt)}
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                );
+              })
             )}
           </div>
         </Surface>
 
-        <Surface className="flex h-[calc(100vh-12rem)] flex-col">
+        <Surface className="flex h-[calc(100vh-11rem)] flex-col overflow-hidden">
           {selected && selectedDraft ? (
             <>
-              <div className="flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center">
+              <div className="flex flex-col gap-3 border-b px-5 py-4 sm:flex-row sm:items-center">
                 <Input
                   value={selectedDraft.title}
                   onChange={(event) => {
@@ -336,11 +390,21 @@ export function NotesView({ documents }: { documents: DocumentRecord[] }) {
                       return { ...current, [selected.id]: { ...existing, title } };
                     });
                   }}
-                  className="font-medium"
+                  className="h-11 border-0 bg-transparent px-0 text-xl font-semibold shadow-none focus-visible:ring-0"
                 />
-                <p className="text-xs text-muted-foreground whitespace-nowrap">{saveLabel}</p>
-                <div className="flex gap-2 sm:ms-auto">
-                  <Button variant="destructive" size="sm" onClick={remove} disabled={pending}>
+                <div className="flex items-center gap-2 sm:ms-auto">
+                  <span
+                    className={cn(
+                      "rounded-full px-2.5 py-1 text-[11px] font-medium whitespace-nowrap",
+                      saveLabel === "נשמר" && "bg-[#E8F5E9] text-[#1B5E20]",
+                      saveLabel === "שומר..." && "bg-amber-50 text-amber-800",
+                      saveLabel === "לא נשמר" && "bg-amber-50 text-amber-800",
+                      saveLabel === "שמירה נכשלה" && "bg-rose-50 text-rose-800",
+                    )}
+                  >
+                    {saveLabel}
+                  </span>
+                  <Button variant="ghost" size="icon-sm" onClick={remove} disabled={pending} aria-label="מחיקת מסמך">
                     <Trash2 className="size-4" />
                   </Button>
                   <Button size="sm" onClick={save} disabled={pending || !dirty}>
@@ -356,8 +420,12 @@ export function NotesView({ documents }: { documents: DocumentRecord[] }) {
               />
             </>
           ) : (
-            <div className="flex flex-1 items-center justify-center p-8 text-sm text-muted-foreground">
-              בחרו מסמך או צרו אחד חדש.
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
+              <span className="flex size-14 items-center justify-center rounded-2xl bg-[#E8F5E9] text-[#2E7D32]">
+                <FileText className="size-7" />
+              </span>
+              <p className="text-sm font-medium">אין מסמך נבחר</p>
+              <p className="max-w-xs text-sm text-muted-foreground">בחרו מסמך מהרשימה או צרו אחד חדש כדי להתחיל לכתוב.</p>
             </div>
           )}
         </Surface>

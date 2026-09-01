@@ -10,7 +10,9 @@ import {
   updateEvaluator,
 } from "@/actions/evaluators";
 import { EVALUATOR_ROLES, YEAR_OPTIONS } from "@/lib/constants";
+import { compareValues, toggleSort, type SortState } from "@/lib/sort";
 import type { EvaluatorRecord } from "@/lib/types";
+import { SortableHead } from "@/components/sortable-head";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -52,12 +54,23 @@ const emptyForm = {
   relevantTo2026: true,
 };
 
+type EvaluatorSortKey =
+  | "name"
+  | "roles"
+  | "year"
+  | "tz"
+  | "ma"
+  | "email"
+  | "relevantTo2026"
+  | "totalDays";
+
 export function EvaluatorsView({ evaluators }: { evaluators: EvaluatorRecord[] }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<EvaluatorRecord | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [pending, startTransition] = useTransition();
+  const [sort, setSort] = useState<SortState<EvaluatorSortKey>>({ key: "name", dir: "asc" });
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -69,6 +82,30 @@ export function EvaluatorsView({ evaluators }: { evaluators: EvaluatorRecord[] }
         .includes(needle),
     );
   }, [evaluators, query]);
+
+  const rows = useMemo(() => {
+    const next = [...filtered];
+    next.sort((left, right) => {
+      switch (sort.key) {
+        case "roles":
+          return compareValues(left.roles.join(", "), right.roles.join(", "), sort.dir);
+        case "year": {
+          const rank = (year: string) => {
+            const index = (YEAR_OPTIONS as readonly string[]).indexOf(year);
+            return index === -1 ? 1000 : index;
+          };
+          return compareValues(rank(left.year), rank(right.year), sort.dir);
+        }
+        case "relevantTo2026":
+          return compareValues(left.relevantTo2026, right.relevantTo2026, sort.dir);
+        case "totalDays":
+          return compareValues(left.totalDays ?? 0, right.totalDays ?? 0, sort.dir);
+        default:
+          return compareValues(left[sort.key] ?? "", right[sort.key] ?? "", sort.dir);
+      }
+    });
+    return next;
+  }, [filtered, sort]);
 
   function openCreate() {
     setEditing(null);
@@ -142,54 +179,111 @@ export function EvaluatorsView({ evaluators }: { evaluators: EvaluatorRecord[] }
               className="ps-9"
             />
           </div>
-          <p className="text-xs text-muted-foreground">{filtered.length} מעריכים</p>
+          <p className="text-xs text-muted-foreground">{rows.length} מעריכים</p>
         </div>
 
-        <Table>
+        <Table className="equal-data-cols table-fixed" style={{ tableLayout: "fixed", width: "100%" }}>
+          <colgroup>
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "4%" }} />
+          </colgroup>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className="px-4">שם</TableHead>
-              <TableHead>תפקיד</TableHead>
-              <TableHead>שנה</TableHead>
-              <TableHead>ת.ז</TableHead>
-              <TableHead>מ.א</TableHead>
-              <TableHead>אימייל</TableHead>
-              <TableHead className="text-center">רלוונטי ל-2026</TableHead>
-              <TableHead className="px-4" />
+              <SortableHead
+                label="שם"
+                className="px-4"
+                active={sort.key === "name"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "name"))}
+              />
+              <SortableHead
+                label="תפקיד"
+                active={sort.key === "roles"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "roles"))}
+              />
+              <SortableHead
+                label="שנה"
+                active={sort.key === "year"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "year"))}
+              />
+              <SortableHead
+                label="ת.ז"
+                active={sort.key === "tz"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "tz"))}
+              />
+              <SortableHead
+                label="מ.א"
+                active={sort.key === "ma"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "ma"))}
+              />
+              <SortableHead
+                label="אימייל"
+                active={sort.key === "email"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "email"))}
+              />
+              <SortableHead
+                label="רלוונטי ל-2026"
+                className="whitespace-normal"
+                align="center"
+                active={sort.key === "relevantTo2026"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "relevantTo2026"))}
+              />
+              <SortableHead
+                label="סך הכל ימים"
+                className="whitespace-normal"
+                align="center"
+                active={sort.key === "totalDays"}
+                dir={sort.dir}
+                onClick={() => setSort((current) => toggleSort(current, "totalDays"))}
+              />
+              <TableHead className="px-2" />
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.length === 0 ? (
+            {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={9} className="h-24 text-center text-muted-foreground">
                   אין מעריכים להצגה.
                 </TableCell>
               </TableRow>
             ) : (
-              filtered.map((evaluator) => (
+              rows.map((evaluator) => (
                 <TableRow key={evaluator.id}>
-                  <TableCell className="px-4 font-medium">{evaluator.name}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
+                  <TableCell className="min-w-0 truncate px-4 font-medium">{evaluator.name}</TableCell>
+                  <TableCell className="min-w-0 overflow-hidden">
+                    <div className="flex gap-1 overflow-hidden whitespace-nowrap">
                       {evaluator.roles.length === 0 ? (
                         <span className="text-muted-foreground">—</span>
                       ) : (
                         evaluator.roles.map((role) => (
-                          <Badge key={role} variant="secondary">
+                          <Badge key={role} variant="secondary" className="shrink-0">
                             {role}
                           </Badge>
                         ))
                       )}
                     </div>
                   </TableCell>
-                  <TableCell>{evaluator.year || "—"}</TableCell>
-                  <TableCell className="font-mono text-xs" dir="ltr">
+                  <TableCell className="min-w-0 truncate">{evaluator.year || "—"}</TableCell>
+                  <TableCell className="min-w-0 truncate font-mono text-xs" dir="ltr">
                     {evaluator.tz || "—"}
                   </TableCell>
-                  <TableCell className="font-mono text-xs" dir="ltr">
+                  <TableCell className="min-w-0 truncate font-mono text-xs" dir="ltr">
                     {evaluator.ma || "—"}
                   </TableCell>
-                  <TableCell dir="ltr" className="text-start">
+                  <TableCell dir="ltr" className="min-w-0 truncate text-start">
                     {evaluator.email || "—"}
                   </TableCell>
                   <TableCell className="text-center">
@@ -203,7 +297,10 @@ export function EvaluatorsView({ evaluators }: { evaluators: EvaluatorRecord[] }
                       aria-label="רלוונטי ל-2026"
                     />
                   </TableCell>
-                  <TableCell className="px-4">
+                  <TableCell className="text-center font-semibold tabular-nums">
+                    {evaluator.totalDays ?? 0}
+                  </TableCell>
+                  <TableCell className="px-2">
                     <Button variant="ghost" size="icon-sm" onClick={() => openEdit(evaluator)}>
                       <Pencil className="size-4" />
                     </Button>

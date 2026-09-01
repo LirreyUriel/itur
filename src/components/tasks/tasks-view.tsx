@@ -8,7 +8,6 @@ import { TASK_STATUSES, type TaskStatus } from "@/lib/constants";
 import { formatHebrewShortDate, toDateInputValue } from "@/lib/dates";
 import type { EventRecord, TaskLink, TaskRecord } from "@/lib/types";
 import { PageHeader, Surface } from "@/components/page-header";
-import { TaskStatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -137,7 +136,15 @@ export function TasksView({
       />
 
       <Surface>
-        <Table>
+        <Table className="table-fixed" style={{ tableLayout: "fixed", width: "100%" }}>
+          <colgroup>
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "18%" }} />
+            <col style={{ width: "16%" }} />
+            <col style={{ width: "16%" }} />
+            <col style={{ width: "30%" }} />
+            <col style={{ width: "8%" }} />
+          </colgroup>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="px-4">כותרת</TableHead>
@@ -158,13 +165,8 @@ export function TasksView({
             ) : (
               tasks.map((task) => (
                 <TableRow key={task.id}>
-                  <TableCell className="px-4 font-medium whitespace-normal">
-                    <div>{task.title}</div>
-                    {task.notes ? (
-                      <p className="mt-1 line-clamp-2 text-xs font-normal text-muted-foreground">
-                        {task.notes}
-                      </p>
-                    ) : null}
+                  <TableCell className="max-w-0 overflow-hidden px-4 font-medium">
+                    <div className="truncate" title={task.title}>{task.title}</div>
                   </TableCell>
                   <TableCell>
                     <Select
@@ -213,12 +215,9 @@ export function TasksView({
                     )}
                   </TableCell>
                   <TableCell className="px-4">
-                    <div className="flex items-center gap-2">
-                      <TaskStatusBadge status={task.status} />
-                      <Button variant="ghost" size="icon-sm" onClick={() => openEdit(task)}>
-                        <Pencil className="size-4" />
-                      </Button>
-                    </div>
+                    <Button variant="ghost" size="icon-sm" onClick={() => openEdit(task)}>
+                      <Pencil className="size-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))

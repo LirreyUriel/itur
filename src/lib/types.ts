@@ -10,6 +10,7 @@ export type EvaluatorRecord = {
   ma: string;
   email: string;
   relevantTo2026: boolean;
+  totalDays?: number;
 };
 
 export type EventRecord = {
