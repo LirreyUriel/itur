@@ -72,7 +72,7 @@ function Brand() {
           את
         </div>
         <div>
-          <p className="text-base font-semibold tracking-tight text-white">איתור</p>
+          <p className="text-base font-semibold tracking-tight text-white">ליריתור</p>
           <p className="text-xs text-white/55">מערכת ניהול פנימית</p>
         </div>
       </div>
@@ -114,7 +114,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <SidebarBody onNavigate={() => setOpen(false)} />
             </SheetContent>
           </Sheet>
-          <span className="text-sm font-semibold">איתור</span>
+          <span className="text-sm font-semibold">ליריתור</span>
         </header>
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
       </div>

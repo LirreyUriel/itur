@@ -46,7 +46,7 @@ export function MultiSelect({
   }
 
   return (
-    <Popover>
+    <Popover modal={false}>
       <PopoverTrigger asChild>
         <Button
           type="button"
@@ -89,12 +89,21 @@ export function MultiSelect({
           <ChevronsUpDown className="ms-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[var(--radix-popover-trigger-width)] p-0 text-start">
-        <Command>
+      <PopoverContent
+        align="start"
+        collisionPadding={8}
+        className="w-[var(--radix-popover-trigger-width)] p-0 text-start"
+        onWheel={(event) => event.stopPropagation()}
+        onTouchMove={(event) => event.stopPropagation()}
+      >
+        <Command className="flex max-h-72 flex-col overflow-hidden">
           <CommandInput placeholder={searchPlaceholder} />
-          <CommandList>
+          <CommandList
+            className="min-h-0 max-h-none flex-1 overflow-y-auto overscroll-contain"
+            onWheel={(event) => event.stopPropagation()}
+          >
             <CommandEmpty>{emptyText}</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup className="overflow-visible">
               {options.map((option) => {
                 const isSelected = selected.includes(option.value);
                 return (

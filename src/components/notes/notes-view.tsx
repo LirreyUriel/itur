@@ -37,13 +37,20 @@ function isDirty(draft: Draft) {
   return draft.title !== draft.savedTitle || draft.content !== draft.savedContent;
 }
 
-function textPreview(html: string) {
-  const text = html
+function htmlToText(html: string) {
+  return html
     .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
     .replace(/\s+/g, " ")
     .trim();
-  return text.slice(0, 72);
+}
+
+function textPreview(html: string) {
+  return htmlToText(html).slice(0, 72);
 }
 
 export function NotesView({ documents }: { documents: DocumentRecord[] }) {
@@ -93,8 +100,10 @@ export function NotesView({ documents }: { documents: DocumentRecord[] }) {
     const needle = docQuery.trim().toLowerCase();
     if (!needle) return orderedDocuments;
     return orderedDocuments.filter((document) => {
-      const title = drafts[document.id]?.title ?? document.title;
-      return title.toLowerCase().includes(needle);
+      const draft = drafts[document.id];
+      const title = (draft?.title ?? document.title).toLowerCase();
+      const body = htmlToText(draft?.content ?? document.content).toLowerCase();
+      return title.includes(needle) || body.includes(needle);
     });
   }, [docQuery, drafts, orderedDocuments]);
 
@@ -309,7 +318,7 @@ export function NotesView({ documents }: { documents: DocumentRecord[] }) {
               <Input
                 value={docQuery}
                 onChange={(event) => setDocQuery(event.target.value)}
-                placeholder="חיפוש מסמך"
+                placeholder="חיפוש בכותרת או בתוך המסמך"
                 className="h-9 bg-white ps-9"
               />
             </div>

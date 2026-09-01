@@ -193,8 +193,10 @@
 
 .document-editor {
   line-height: 1.85;
-  max-width: 46rem;
-  margin-inline: auto;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  text-align: start;
   font-size: 1.02rem;
 }
 

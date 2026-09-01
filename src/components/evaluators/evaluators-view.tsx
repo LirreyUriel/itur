@@ -217,12 +217,14 @@ export function EvaluatorsView({ evaluators }: { evaluators: EvaluatorRecord[] }
               />
               <SortableHead
                 label="ת.ז"
+                align="center"
                 active={sort.key === "tz"}
                 dir={sort.dir}
                 onClick={() => setSort((current) => toggleSort(current, "tz"))}
               />
               <SortableHead
                 label="מ.א"
+                align="center"
                 active={sort.key === "ma"}
                 dir={sort.dir}
                 onClick={() => setSort((current) => toggleSort(current, "ma"))}
@@ -277,11 +279,15 @@ export function EvaluatorsView({ evaluators }: { evaluators: EvaluatorRecord[] }
                     </div>
                   </TableCell>
                   <TableCell className="min-w-0 truncate">{evaluator.year || "—"}</TableCell>
-                  <TableCell className="min-w-0 truncate font-mono text-xs" dir="ltr">
-                    {evaluator.tz || "—"}
+                  <TableCell className="min-w-0">
+                    <div className="w-full truncate text-center font-mono text-xs" dir="ltr">
+                      {evaluator.tz || "—"}
+                    </div>
                   </TableCell>
-                  <TableCell className="min-w-0 truncate font-mono text-xs" dir="ltr">
-                    {evaluator.ma || "—"}
+                  <TableCell className="min-w-0">
+                    <div className="w-full truncate text-center font-mono text-xs" dir="ltr">
+                      {evaluator.ma || "—"}
+                    </div>
                   </TableCell>
                   <TableCell dir="ltr" className="min-w-0 truncate text-start">
                     {evaluator.email || "—"}

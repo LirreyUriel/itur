@@ -14,7 +14,7 @@ const heebo = Heebo({
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "איתור | מערכת ניהול פנימית",
+  title: "ליריתור",
   description: "ניהול מעריכים, אירועים, משימות ומסמכים במקום אחד",
 };
 
